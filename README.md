@@ -34,7 +34,7 @@ python3 sutra_matrix.py --density 0.55 --speed 0.7
 較密集、快速：
 
 ```sh
-python3 sutra_matrix.py --density 1 --speed 1.5
+python3 sutra_matrix.py --density 1 --speed 3
 ```
 
 `--density` 設定啟用欄位的比例（0.1–1），不是畫面填滿比例。每束字流之間有黑色間隔，不會鋪滿暗字背景。`--speed` 為 0.1–5。視窗大小改變時會重新分配字雨。
@@ -60,6 +60,27 @@ python3 sutra_matrix.py --theme green
 ```
 
 字流分為遠、中、近三層，亮度、速度與長度不同；每束落完後會留出空白再出現。背景保持純黑，沒有滿版文字底層。使用 256 色終端機呈現六層明暗；只有基本色的終端機會降級顯示。終端機格線限制每個漢字大小相同，無法重現參考圖片的大小變化與書法字形；字型可自行在終端機偏好設定中調整。
+
+## 選擇經文版本
+
+所有版本預設象牙白、三層景深、密度 1、速度 2；只更換隨機抽字的經文來源。
+
+| 版本 | 啟動命令 |
+| --- | --- |
+| 心經 | `python3 sutra_matrix.py` |
+| 觀無量壽經 | `python3 sutra_matrix.py --sutra contemplation` |
+| 金剛經 | `python3 sutra_matrix.py --sutra diamond` |
+| 大勢至菩薩念佛圓通章 | `python3 sutra_matrix.py --sutra mahasthamaprapta` |
+| 阿彌陀經 | `python3 sutra_matrix.py --sutra amitabha` |
+
+也接受表格中的中文名稱，例如：
+
+```sh
+python3 sutra_matrix.py --sutra 金剛經
+python3 sutra_matrix.py --sutra 大勢至菩薩念佛圓通章
+```
+
+按 `q` 退出後，再輸入另一部經的命令即可切換。用 `python3 sutra_matrix.py --list` 查看全部版本。色調、速度和密度參數可以與 `--sutra` 搭配使用。
 
 ## 更換經文
 
@@ -101,7 +122,7 @@ python3 sutra_matrix.py
 ## 來源與授權
 
 - 程式碼與本專案說明：MIT License，見 `LICENSE`。
-- `heart_sutra.txt`：玄奘譯《般若波羅蜜多心經》（T0251），取自 CBETA 電子佛典集成 Version 2026.R2 的 PDF 本文，保留其用字。經文資料另見 `NOTICE.md`，不包含於程式碼的 MIT 授權。
+- 五種經文取自 CBETA 電子佛典集成 Version 2026.R2 的 PDF 正文，來源與擷取範圍見 `NOTICE.md`。經文電子資料不包含於程式碼的 MIT 授權。
 - 視覺靈感來自 cmatrix；本專案與 cmatrix 無隸屬關係。
 
 ## 驗證範圍

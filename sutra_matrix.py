@@ -9,6 +9,16 @@ import time
 from pathlib import Path
 
 
+SUTRAS = {
+    'heart': ('心經', 'heart_sutra.txt'),
+    'contemplation': ('觀無量壽經', 'contemplation_sutra.txt'),
+    'diamond': ('金剛經', 'diamond_sutra.txt'),
+    'mahasthamaprapta': ('大勢至菩薩念佛圓通章', 'mahasthamaprapta.txt'),
+    'amitabha': ('阿彌陀經', 'amitabha_sutra.txt'),
+}
+ALIASES = {title: key for key, (title, _) in SUTRAS.items()}
+
+
 def han(text):
     return [c for c in text if '\u3400' <= c <= '\u9fff' or '\U00020000' <= c <= '\U0003134f']
 
@@ -109,16 +119,25 @@ def run(screen, args, chars):
 
 def main():
     parser = argparse.ArgumentParser(description='佛經字雨 · Sutra Matrix', epilog='q / Esc 離開；空白鍵暫停；+ / - 調整速度。')
-    parser.add_argument('--text', type=Path, default=Path(__file__).with_name('heart_sutra.txt'), help='UTF-8 經文文字檔')
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument('--text', type=Path, help='自訂 UTF-8 經文文字檔')
+    source.add_argument('--sutra', default='heart', choices=list(SUTRAS) + list(ALIASES), help='經文名稱或英文代號，預設心經')
+    parser.add_argument('--list', action='store_true', help='列出內建經文後離開')
     parser.add_argument('--speed', type=float, default=2.0, help='速度倍率（0.1–5，預設 2）')
     parser.add_argument('--density', type=float, default=1.0, help='啟用字雨欄位的比例（0.1–1，預設 1）')
     parser.add_argument('--theme', choices=['teal', 'ivory', 'green'], default='ivory', help='青綠、象牙白（預設）、經典綠')
     parser.add_argument('--duration', type=float, default=0, help='幾秒後自動退出；0 表示持續播放')
     args = parser.parse_args()
+    if args.list:
+        for key, (title, _) in SUTRAS.items():
+            print(f'{key:20} {title}')
+        return
     if not .1 <= args.speed <= 5 or not .1 <= args.density <= 1 or not args.duration >= 0:
         parser.error('速度須為 0.1–5，密度須為 0.1–1，時間不可小於 0。')
+    key = ALIASES.get(args.sutra, args.sutra)
+    text_path = args.text if args.text is not None else Path(__file__).with_name(SUTRAS[key][1])
     try:
-        chars = han(args.text.read_text(encoding='utf-8'))
+        chars = han(text_path.read_text(encoding='utf-8'))
     except (OSError, UnicodeError) as error:
         parser.error(str(error))
     if not chars:
